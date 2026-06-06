@@ -1,7 +1,8 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
-
+const errorHandler = require("./middlewares/errorhandling");
+const reportRoutes = require("./routes/reports");
 const app = express();
 
 app.use(express.json());
@@ -13,9 +14,8 @@ app.use(
   })
 );
 
-
-const reportRoutes = require("./routes/reports");
 app.use("/api/report", reportRoutes);
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 3000;
 

@@ -3,9 +3,8 @@ const { GoogleGenerativeAI } = require('@google/generative-ai')
 const genAI = new GoogleGenerativeAI(process.env.API_KEY);
 
 const explainMedicalReport = async (reportText) => {
-
+try{
   const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' })
-
  const prompt = `
 You are a medical report explanation assistant.
 
@@ -61,6 +60,22 @@ ${reportText}
 `;
   const result = await model.generateContent(prompt)
   return result.response.text()
-}
+}catch(error){
+ if (error.message.includes("503")) {
+      throw new Error(
+        "AI service is busy. Please try again in a few minutes."
+      );
+    }
 
-module.exports = { explainMedicalReport }
+    if (error.message.includes("429")) {
+      throw new Error(
+        "Too many requests. Please try again later."
+      );
+    }
+
+    throw new Error(
+      "Failed to analyze the report."
+    );
+}
+}
+module.exports = { explainMedicalReport };
