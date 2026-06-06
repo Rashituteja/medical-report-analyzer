@@ -1,0 +1,23 @@
+const multer = require("multer");
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const cloudinary = require("../config/cloudinary");
+
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: "medical_reports",
+    resource_type: "raw",
+  },
+});
+
+const upload = multer({ 
+  storage,
+  fileFilter: (req, file, cb) => {
+    cb(null, true);
+  }
+  
+});
+
+ 
+
+module.exports = upload;
